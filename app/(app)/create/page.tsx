@@ -17,8 +17,8 @@ import { AnimatedGroup } from "@/components/ui/animated-group";
 
 const transitionVariants = {
   item: {
-    hidden: { opacity: 0, y: 12, filter: "blur(12px)" },
-    visible: { opacity: 1, y: 0, filter: "blur(0px)", transition: { type: "spring" as const, bounce: 0.3, duration: 1.5 } },
+    hidden: { opacity: 0, y: 12 },
+    visible: { opacity: 1, y: 0, transition: { type: "spring" as const, bounce: 0.3, duration: 1.5 } },
   },
 };
 
@@ -41,8 +41,9 @@ export default function CreatePage() {
     }
 
     const inputContent = inputType === "topic" ? topic : article;
+    const trimmedInput = inputContent.trim();
 
-    if (!inputContent.trim()) {
+    if (!trimmedInput) {
       toast.error(
         inputType === "topic"
           ? "Please enter a topic"
@@ -51,7 +52,7 @@ export default function CreatePage() {
       return;
     }
 
-    if (inputType === "topic" && inputContent.length < 10) {
+    if (inputType === "topic" && trimmedInput.length < 10) {
       toast.error("Topic must be at least 10 characters");
       return;
     }
@@ -66,7 +67,7 @@ export default function CreatePage() {
       });
 
       // Trigger Inngest workflow
-      await fetch("/api/trigger-inngest", {
+      const response = await fetch("/api/trigger-inngest", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -74,11 +75,15 @@ export default function CreatePage() {
         body: JSON.stringify({
           projectId,
           inputType,
-          inputContent: inputContent.trim(),
+          inputContent: trimmedInput,
           generationMode: "grounded",
           researchEnabled: true,
         }),
       });
+
+      if (!response.ok) {
+        throw new Error(`Generation trigger failed: ${response.status}`);
+      }
 
       toast.success("AI Agents initialized! Generating content...");
       router.push(`/dashboard/${projectId}`);

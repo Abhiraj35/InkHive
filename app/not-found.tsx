@@ -1,11 +1,22 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Header } from "@/components/header";
+import { Logo } from "@/components/logo";
 
 export default function NotFound() {
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden bg-background">
-      <Header />
+      <header className="fixed z-20 w-full px-2">
+        <div className="mx-auto mt-2 max-w-6xl rounded-2xl border border-transparent px-6 backdrop-blur-none lg:px-12">
+          <div className="flex items-center justify-between py-2 lg:py-2">
+            <Link href="/" aria-label="home" className="flex items-center space-x-2">
+              <Logo />
+            </Link>
+            <Button asChild variant="ghost" size="sm">
+              <Link href="/">Home</Link>
+            </Button>
+          </div>
+        </div>
+      </header>
       
       <main className="flex-1 flex flex-col items-center justify-center relative z-10 px-4 pt-16 pb-24">
         {/* Giant 404 Background */}

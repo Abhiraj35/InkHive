@@ -1,11 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
-import { ClerkProvider } from "@clerk/nextjs";
-import { ConvexClientProvider } from "@/components/providers/convex-client-provider";
-import { SmoothScrollProvider } from "@/components/providers/smooth-scroll-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "sonner";
-import { RootProvider } from "fumadocs-ui/provider/next";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -42,25 +38,19 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} min-h-screen bg-background text-foreground antialiased flex flex-col`}
       >
-        <RootProvider theme={{ defaultTheme: "dark", enableSystem: false }}>
-          <ClerkProvider>
-            <ConvexClientProvider>
-              <TooltipProvider>
-                <SmoothScrollProvider>{children}</SmoothScrollProvider>
-              </TooltipProvider>
-              <Toaster 
-                position="bottom-right" 
-                toastOptions={{
-                  style: {
-                    background: '#FAFAF9',
-                    border: '1px solid #E7E5E4',
-                    borderRadius: '0.75rem',
-                  },
-                }}
-              />
-            </ConvexClientProvider>
-          </ClerkProvider>
-        </RootProvider>
+        <TooltipProvider>
+          {children}
+        </TooltipProvider>
+        <Toaster 
+          position="bottom-right" 
+          toastOptions={{
+            style: {
+              background: '#FAFAF9',
+              border: '1px solid #E7E5E4',
+              borderRadius: '0.75rem',
+            },
+          }}
+        />
       </body>
     </html>
   );
