@@ -36,6 +36,13 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import dynamic from "next/dynamic";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const BlogPostEditor = dynamic(
   () => import("@/components/blocks/blog-post-editor").then((m) => ({ default: m.BlogPostEditor })),
@@ -53,13 +60,6 @@ const SeoEditor = dynamic(
   () => import("@/components/blocks/seo-editor").then((m) => ({ default: m.SeoEditor })),
   { ssr: false },
 );
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 
 export default function DashboardPage() {
   const params = useParams();
