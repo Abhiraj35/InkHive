@@ -1,0 +1,18 @@
+import { ClerkProvider } from "@clerk/nextjs";
+import { ConvexClientProvider } from "@/components/providers/convex-client-provider";
+import { ProjectsProvider } from "@/components/providers/projects-provider";
+import type { ReactNode } from "react";
+
+export default function AppLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  return (
+    <ClerkProvider>
+      <ConvexClientProvider>
+        <ProjectsProvider>{children}</ProjectsProvider>
+      </ConvexClientProvider>
+    </ClerkProvider>
+  );
+}

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { useQuery, useMutation } from 'convex/react';
+import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { formatDate, truncateText } from "@/lib/utils";
 import { Plus, Loader2, FileText, Share2, Mail, Globe, ArrowRight, Box, MoreVertical, Trash2 } from "lucide-react";
@@ -18,16 +18,17 @@ import { toast } from 'sonner';
 import { Id } from '@/convex/_generated/dataModel';
 import { DeleteResource } from '@/components/delete-resource';
 import { useUser } from '@clerk/nextjs';
+import { useProjects } from '@/components/providers/projects-provider';
 
 const transitionVariants = {
   item: {
-    hidden: { opacity: 0, y: 12, filter: "blur(12px)" },
-    visible: { opacity: 1, y: 0, filter: "blur(0px)", transition: { type: "spring" as const, bounce: 0.3, duration: 1.5 } },
+    hidden: { opacity: 0, y: 12 },
+    visible: { opacity: 1, y: 0, transition: { type: "spring" as const, bounce: 0.3, duration: 1.5 } },
   },
 };
 
 export default function Content() {
-  const projects = useQuery(api.contentProjects.getUserProjects);
+  const { projects } = useProjects();
   const deleteProject = useMutation(api.contentProjects.deleteProject);
   const { user, isLoaded } = useUser();
 
@@ -136,7 +137,7 @@ export default function Content() {
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1 pr-4">
                       <h3 className="font-medium tracking-tight text-foreground line-clamp-2 mb-1 group-hover:text-primary transition-colors">
-                        {project.blogPost?.title || truncateText(project.inputContent, 50)}
+                        {project.title || truncateText(project.inputContent, 50)}
                       </h3>
                       <p className="text-xs text-muted-foreground">
                         {formatDate(project.createdAt)}
@@ -151,7 +152,7 @@ export default function Content() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-40 rounded-xl bg-background/95 backdrop-blur-md border-white/10">
                         <DropdownMenuItem
-                          onClick={(e) => confirmDelete(e, project._id, project.blogPost?.title || truncateText(project.inputContent, 50))}
+                          onClick={(e) => confirmDelete(e, project._id, project.title || truncateText(project.inputContent, 50))}
                           className="text-red-500 focus:text-red-500 focus:bg-red-500/10 cursor-pointer"
                         >
                           <Trash2 className="mr-2 h-4 w-4" />
@@ -162,13 +163,12 @@ export default function Content() {
                   </div>
 
                   <p className="text-sm text-muted-foreground line-clamp-2 mb-5">
-                    {project.blogPost?.excerpt ||
-                      `Source: ${truncateText(project.inputContent, 100)}`}
+                    Source: {truncateText(project.inputContent, 100)}
                   </p>
 
                   {/* Content Types Preview */}
                   <div className="flex items-center gap-2 flex-wrap mt-auto">
-                    {project.blogPost && (
+                    {project.hasBlog && (
                       <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white/5 border border-white/10 rounded-md">
                         <FileText className="w-3 h-3 text-foreground" />
                         <span className="text-[11px] font-medium text-muted-foreground">
@@ -176,7 +176,7 @@ export default function Content() {
                         </span>
                       </div>
                     )}
-                    {project.socialPosts && (
+                    {project.hasSocial && (
                       <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white/5 border border-white/10 rounded-md">
                         <Share2 className="w-3 h-3 text-foreground" />
                         <span className="text-[11px] font-medium text-muted-foreground">
@@ -184,7 +184,7 @@ export default function Content() {
                         </span>
                       </div>
                     )}
-                    {project.emailNewsletter && (
+                    {project.hasEmail && (
                       <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white/5 border border-white/10 rounded-md">
                         <Mail className="w-3 h-3 text-foreground" />
                         <span className="text-[11px] font-medium text-muted-foreground">
@@ -192,7 +192,7 @@ export default function Content() {
                         </span>
                       </div>
                     )}
-                    {project.seoMetadata && (
+                    {project.hasSeo && (
                       <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white/5 border border-white/10 rounded-md">
                         <Globe className="w-3 h-3 text-foreground" />
                         <span className="text-[11px] font-medium text-muted-foreground">

@@ -83,6 +83,41 @@ export const getUserProjects = query({
 });
 
 /**
+ * Get lightweight project summaries for list views
+ * Returns only the fields needed for the dashboard grid and sidebar
+ * Requires authentication
+ */
+export const getUserProjectsSummary = query({
+  args: {},
+  handler: async (ctx) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      return [];
+    }
+
+    const projects = await ctx.db
+      .query("contentProjects")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .order("desc")
+      .take(50);
+
+    return projects.map((project) => ({
+      _id: project._id,
+      title: project.blogPost?.title,
+      inputContent: project.inputContent.slice(0, 150),
+      inputType: project.inputType,
+      status: project.status,
+      createdAt: project.createdAt,
+      publishedTo: project.publishedTo,
+      hasBlog: !!project.blogPost,
+      hasSocial: !!project.socialPosts,
+      hasEmail: !!project.emailNewsletter,
+      hasSeo: !!project.seoMetadata,
+    }));
+  },
+});
+
+/**
  * Get a single project by ID
  * Requires authentication - verifies user ownership
  */

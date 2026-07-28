@@ -1,13 +1,20 @@
 import type { NextConfig } from "next";
 import { createMDX } from "fumadocs-mdx/next";
 
+const withBundleAnalyzer =
+  process.env.ANALYZE === "true"
+    ? require("@next/bundle-analyzer").default({ enabled: true })
+    : (nextConfig: NextConfig) => nextConfig;
+
 const nextConfig: NextConfig = {
-  /* config options here */
   reactCompiler: true,
+  experimental: {
+    optimizePackageImports: ["lucide-react", "radix-ui"],
+  },
 };
 
 const withMDX = createMDX({
   // configPath: "source.config.ts",
 });
 
-export default withMDX(nextConfig);
+export default withBundleAnalyzer(withMDX(nextConfig));

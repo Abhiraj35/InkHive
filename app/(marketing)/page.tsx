@@ -1,5 +1,3 @@
-"use client";
-
 import { HeroSection } from "@/components/blocks/hero-section";
 import CallToAction from "@/components/call-to-action";
 import FooterSection from "@/components/footer";
