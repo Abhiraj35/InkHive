@@ -1,0 +1,59 @@
+---
+title: Contributing
+description: Project structure and how to extend InkHive.
+---
+
+# Contributing
+
+## Project structure
+
+```
+├── app/                  # Next.js App Router pages and layouts
+├── components/           # Shared UI components
+├── convex/               # Schema, queries, and mutations
+│   ├── schema.ts         # Table definitions and indexes
+│   └── contentProjects.ts # Project-specific functions
+├── inngest/              # Orchestration layer
+│   ├── client.ts         # Inngest client setup
+│   ├── functions/        # Pipeline and publish functions
+│   └── steps/            # Individual AI generation steps
+│       └── ai-generation/
+├── lib/                  # Utilities and integrations
+│   └── publish/          # Platform-specific publishing logic
+└── public/               # Static assets
+```
+
+## Adding a new AI step
+
+1. Create a file in `inngest/steps/ai-generation/<your-step>.ts`.
+2. Define the prompt and parsing logic.
+3. Wire it into `contentPipeline` or create a new Inngest function.
+4. Add a Convex mutation in `convex/contentProjects.ts` to persist the output.
+5. Update the schema if the new step adds fields to `contentProjects`.
+6. Add tests using `convex-test` + `vitest`.
+
+## Adding a new publish platform
+
+1. Create a publisher in `lib/publish/<platform>.ts`.
+2. Implement the publish function that accepts project data and returns a status.
+3. Wire it into the `publishContent` Inngest function.
+4. Add the platform's status field to the schema if needed.
+
+## Code conventions
+
+- Convex mutations must derive user identity via `ctx.auth.getUserIdentity()` — never accept userId from the client.
+- Use Convex indexes for all queries — avoid `filter()`.
+- Keep prompts in `inngest/steps/ai-generation/` and version them with comments when behavior changes.
+- Log token usage per AI step for cost monitoring.
+
+## Testing
+
+- **Convex functions**: Use `convex-test` + `vitest` for unit tests on mutations and queries.
+- **Inngest functions**: Mock Convex responses or spin up a test Convex instance.
+- Run tests with `npm test`.
+
+## Observability
+
+- Inngest step logs provide step-level visibility. Aggregate with a logging backend (Datadog, Logflare).
+- Job-level errors are stored in `contentProjects.error` for historical analysis.
+- The Inngest dashboard shows real-time execution status for all running workflows.

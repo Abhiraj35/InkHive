@@ -2,10 +2,11 @@
   "title": "InkHive Docs",
   "pages": [
     "index",
-    "overview",
-    "architecture",
-    "api-reference",
-    "deployment",
-    "full-documentation"
+    "---Getting Started---",
+    "getting-started",
+    "---Core---",
+    "core",
+    "---Reference---",
+    "reference"
   ]
 }

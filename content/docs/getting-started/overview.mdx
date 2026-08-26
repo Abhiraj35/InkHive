@@ -1,0 +1,38 @@
+---
+title: Overview
+description: What InkHive does and how the workflow fits together.
+---
+
+# Overview
+
+InkHive turns a single idea into a full content kit: long-form blog, SEO metadata, social posts, and email copy. It automates generation, organizes drafts, and provides a reliable publishing pipeline.
+
+## Who it's for
+
+- **Content marketers** who need consistency across channels.
+- **Agencies** producing many content variations from limited briefs.
+- **Startups** automating content workflows with full auditability.
+
+## End-to-end flow
+
+1. **Create** — User submits a topic or seed article in the dashboard.
+2. **Generate** — Background AI pipeline produces blog, social posts, email copy, and SEO metadata. Progress updates appear in real time.
+3. **Edit** — All drafts are editable in the UI. Changes save to Convex instantly.
+4. **Publish** — Fan out to multiple platforms (Twitter, LinkedIn, email, etc.) with per-channel status and automatic retries.
+
+## Core building blocks
+
+- **Next.js App Router** — UI, server routes, and Clerk authentication.
+- **Convex** — Realtime data layer for projects, drafts, and job statuses.
+- **Inngest** — Durable orchestration for multi-step AI generation and parallel publishing.
+- **Google Generative AI** — Text generation for all content variants.
+
+## What makes it different
+
+| Feature | InkHive | Manual workflow |
+| --- | --- | --- |
+| Single input → multi-channel output | Yes | Copy-paste between tools |
+| Real-time progress tracking | Yes | Check status manually |
+| Per-platform publish status | Yes | No unified view |
+| Automatic retries on failure | Yes | Manual re-publish |
+| Editable drafts before publish | Yes | Export → edit → re-import |

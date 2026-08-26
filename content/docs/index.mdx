@@ -1,15 +1,44 @@
 ---
 title: InkHive Documentation
-description: Get started with InkHive and understand the system architecture.
+description: Turn a single idea into a full content kit — blog, SEO, social, and email.
 ---
 
-# InkHive Documentation
+# InkHive
 
-Welcome to InkHive docs. This space covers product usage, system design, and the developer reference for the AI content pipeline. The longer-form documentation is available in the detailed guide.
+AI-powered content pipeline that transforms one idea into a complete, publish-ready content kit.
 
-## Start here
+## What it does
 
-- [Overview](./overview.mdx)
-- [Architecture](./architecture.mdx)
-- [API reference](./api-reference.mdx)
-- [Full documentation](./full-documentation.mdx)
+Provide a topic or seed article. InkHive generates:
+
+- **Long-form blog post** — structured markdown with subheadings and conclusion
+- **Social media posts** — platform-specific for Twitter, LinkedIn, Facebook, Instagram, Medium
+- **Email newsletter** — subject lines, HTML, and plain text versions
+- **SEO metadata** — slug, meta title, description, and keywords
+
+All drafts are editable in a real-time UI and publishable to multiple platforms with per-channel status tracking.
+
+## How it works
+
+1. Create a content project from a topic or article.
+2. AI generates all content variants in the background with live progress updates.
+3. Edit drafts directly in the dashboard — changes save in real time.
+4. Publish to connected platforms with automatic retries and error reporting.
+
+## Tech stack
+
+| Layer | Technology |
+| --- | --- |
+| Frontend | Next.js (App Router) |
+| Auth | Clerk |
+| Data | Convex (realtime) |
+| Orchestration | Inngest |
+| AI | Google Generative AI |
+| Email | Resend |
+
+## Next steps
+
+- [Overview](/docs/getting-started/overview) — What InkHive does and the end-to-end workflow.
+- [Installation](/docs/getting-started/installation) — Set up the project locally.
+- [Architecture](/docs/core/architecture) — System design and component interaction.
+- [API Reference](/docs/reference/api-reference) — Endpoints, Convex functions, and schemas.

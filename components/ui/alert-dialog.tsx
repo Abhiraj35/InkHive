@@ -154,8 +154,17 @@ function AlertDialogAction({
   ...props
 }: React.ComponentProps<typeof AlertDialogPrimitive.Action> &
   Pick<React.ComponentProps<typeof Button>, "variant" | "size">) {
+  const hasTextChild = React.Children.toArray(props.children).some(
+    (child) => typeof child === "string" || typeof child === "number"
+  )
+
   return (
-    <Button variant={variant} size={size} asChild>
+    <Button
+      variant={variant}
+      size={size}
+      asChild
+      aria-label={hasTextChild ? undefined : "Confirm"}
+    >
       <AlertDialogPrimitive.Action
         data-slot="alert-dialog-action"
         className={cn(className)}
@@ -172,8 +181,17 @@ function AlertDialogCancel({
   ...props
 }: React.ComponentProps<typeof AlertDialogPrimitive.Cancel> &
   Pick<React.ComponentProps<typeof Button>, "variant" | "size">) {
+  const hasTextChild = React.Children.toArray(props.children).some(
+    (child) => typeof child === "string" || typeof child === "number"
+  )
+
   return (
-    <Button variant={variant} size={size} asChild>
+    <Button
+      variant={variant}
+      size={size}
+      asChild
+      aria-label={hasTextChild ? undefined : "Cancel"}
+    >
       <AlertDialogPrimitive.Cancel
         data-slot="alert-dialog-cancel"
         className={cn(className)}

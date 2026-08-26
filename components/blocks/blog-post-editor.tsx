@@ -213,16 +213,18 @@ export function BlogPostEditor({ project }: { project: ContentProject }) {
             {isEditing ? (
                 <div className="space-y-6 bg-background/50 p-4 sm:p-6 rounded-2xl border border-white/5">
                     <div className="space-y-2">
-                        <Label className="text-foreground font-medium text-sm ml-1">Title</Label>
+                        <Label htmlFor="blog-post-title" className="text-foreground font-medium text-sm ml-1">Title</Label>
                         <Input
+                            id="blog-post-title"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                             className="bg-white/5 border-white/10 focus-visible:ring-1 focus-visible:ring-primary rounded-xl text-base sm:text-lg py-3 sm:py-6"
                         />
                     </div>
                     <div className="space-y-2">
-                        <Label className="text-foreground font-medium text-sm ml-1">Excerpt</Label>
+                        <Label htmlFor="blog-post-excerpt" className="text-foreground font-medium text-sm ml-1">Excerpt</Label>
                         <Textarea
+                            id="blog-post-excerpt"
                             value={excerpt}
                             onChange={(e) => setExcerpt(e.target.value)}
                             rows={3}
@@ -230,8 +232,9 @@ export function BlogPostEditor({ project }: { project: ContentProject }) {
                         />
                     </div>
                     <div className="space-y-2">
-                        <Label className="text-foreground font-medium text-sm ml-1">Content (Markdown)</Label>
+                        <Label htmlFor="blog-post-content" className="text-foreground font-medium text-sm ml-1">Content (Markdown)</Label>
                         <Textarea
+                            id="blog-post-content"
                             value={content}
                             onChange={(e) => setContent(e.target.value)}
                             rows={20}

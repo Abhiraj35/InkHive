@@ -1,0 +1,55 @@
+---
+title: Architecture
+description: How InkHive's components and services interact.
+---
+
+# Architecture
+
+InkHive uses a client-first UI with serverless orchestration and realtime data updates.
+
+## Component overview
+
+```
+┌─────────────┐     ┌──────────┐     ┌──────────┐
+│  Next.js UI │────▶│  Convex  │◀────│ Inngest  │
+│  (Clerk)    │     │  (data)  │     │ (steps)  │
+└──────┬──────┘     └──────────┘     └────┬─────┘
+       │                                   │
+       │         ┌──────────┐              │
+       └────────▶│  APIs    │◀─────────────┘
+                 │  (HTTP)  │
+                 └──────────┘
+```
+
+## Services
+
+| Service | Role |
+| --- | --- |
+| **Next.js App Router** | UI, Clerk auth, minimal API routes for uploads and Inngest triggers |
+| **Convex** | Realtime data store — projects, job statuses, generated content, publish history |
+| **Inngest** | Durable orchestration — multi-step AI generation with retries and parallelism |
+| **Google Generative AI** | Text generation engine used inside Inngest steps |
+
+## Data flow
+
+### Generation
+
+1. Client creates a project via Convex mutation.
+2. API route sends an event to Inngest with project ID and input.
+3. Inngest runs the `contentPipeline` — blog first, then social/email/SEO in parallel.
+4. Each step writes output back to Convex.
+5. UI subscribes to Convex and renders live progress.
+
+### Publishing
+
+1. User clicks publish in the UI.
+2. API route triggers Inngest with `content/publish` event.
+3. `publishContent` function fetches the project snapshot from Convex.
+4. Each platform publisher runs in parallel.
+5. Per-platform status updates write back to Convex in real time.
+
+## Design decisions
+
+- **Convex for realtime** — Subscriptions give instant UI updates without polling or websockets.
+- **Inngest for orchestration** — Step-level retries, parallelism, and dashboard observability without building a custom job queue.
+- **Separation of generation and publishing** — Generation can succeed even if publishing fails; each platform is independent.

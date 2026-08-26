@@ -1,0 +1,77 @@
+---
+title: Installation
+description: Set up InkHive for local development.
+---
+
+# Installation
+
+## Prerequisites
+
+- Node.js 18+
+- A [Convex](https://convex.dev) account
+- A [Clerk](https://clerk.com) account
+- A [Google AI](https://ai.google.dev/) API key
+- An [Inngest](https://inngest.com) account (hosted or self-hosted)
+
+## Setup
+
+### 1. Clone and install
+
+```bash
+git clone https://github.com/Abhiraj35/ai-content-marketing.git
+cd ai-content-marketing
+npm install
+```
+
+### 2. Configure environment variables
+
+Copy the example file and fill in your keys:
+
+```bash
+cp .env.example .env.local
+```
+
+Required variables:
+
+| Variable | Purpose |
+| --- | --- |
+| `NEXT_PUBLIC_CONVEX_URL` | Convex deployment URL |
+| `CLERK_JWT_ISSUER_DOMAIN` | Clerk OIDC issuer domain |
+| `GOOGLE_API_KEY` | Google Generative AI key |
+| `RESEND_API_KEY` | Resend email API key |
+| `INNGEST_API_KEY` | Inngest signing key |
+
+### 3. Start Convex
+
+```bash
+npx convex dev
+```
+
+This provisions your Convex backend and watches for schema changes.
+
+### 4. Start the app
+
+In a separate terminal:
+
+```bash
+npm run dev
+```
+
+The app runs at `http://localhost:3000`.
+
+### 5. Connect Inngest
+
+With the app running, open the Inngest dashboard and point it to your local Inngest endpoint:
+
+```
+http://localhost:3000/api/inngest
+```
+
+This registers your functions and enables the Inngest dashboard for step-level observability.
+
+## Verification
+
+1. Open `http://localhost:3000` and sign in with Clerk.
+2. Create a content project from the dashboard.
+3. Confirm the Inngest pipeline starts generating content.
+4. Verify progress updates appear in the UI in real time.

@@ -171,11 +171,12 @@ export function EmailEditor({ project }: { project: ContentProject }) {
                         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                             <div className="grid gap-6">
                                 <div className="space-y-3">
-                                    <Label className="text-foreground font-semibold text-sm ml-1 flex items-center gap-2">
+                                    <Label htmlFor="email-html-content" className="text-foreground font-semibold text-sm ml-1 flex items-center gap-2">
                                         HTML Template
                                         <span className="text-[10px] bg-white/5 px-2 py-0.5 rounded border border-white/10 font-mono text-muted-foreground uppercase">Advanced</span>
                                     </Label>
                                     <Textarea
+                                        id="email-html-content"
                                         value={htmlContent}
                                         onChange={(e) => setHtmlContent(e.target.value)}
                                         rows={15}
@@ -183,8 +184,9 @@ export function EmailEditor({ project }: { project: ContentProject }) {
                                     />
                                 </div>
                                 <div className="space-y-3">
-                                    <Label className="text-foreground font-semibold text-sm ml-1">Plain Text Fallback</Label>
+                                    <Label htmlFor="email-plain-text" className="text-foreground font-semibold text-sm ml-1">Plain Text Fallback</Label>
                                     <Textarea
+                                        id="email-plain-text"
                                         value={plainText}
                                         onChange={(e) => setPlainText(e.target.value)}
                                         rows={8}

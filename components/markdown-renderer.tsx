@@ -1,5 +1,6 @@
 import ReactMarkdown from "react-markdown";
 import type { Components } from "react-markdown";
+import { Children } from "react";
 import { cn } from "@/lib/utils";
 
 type MarkdownRendererProps = {
@@ -74,15 +75,32 @@ const markdownComponents: Components = {
       {...props}
     />
   ),
-  a: ({ className, ...props }) => (
-    <a
-      className={cn(
-        "font-medium text-primary underline decoration-primary/35 underline-offset-4 transition-colors hover:decoration-primary",
-        className,
-      )}
-      {...props}
-    />
-  ),
+  a: ({ className, children, href, ...props }) => {
+    const accessibleName = Children.toArray(children)
+      .map((child) => {
+        if (typeof child === "string" || typeof child === "number") {
+          return String(child)
+        }
+
+        return ""
+      })
+      .join("")
+      .trim()
+
+    return (
+      <a
+        className={cn(
+          "font-medium text-primary underline decoration-primary/35 underline-offset-4 transition-colors hover:decoration-primary",
+          className,
+        )}
+        aria-label={accessibleName || (typeof href === "string" ? href : undefined)}
+        href={href}
+        {...props}
+      >
+        {children}
+      </a>
+    )
+  },
   pre: ({ className, ...props }) => (
     <pre
       className={cn(

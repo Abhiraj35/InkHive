@@ -118,14 +118,12 @@ export default function CreatePage() {
       {/* Header */}
       <header className="sticky top-0 z-40 border-b border-border/50 bg-background/80 backdrop-blur-md">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center gap-4">
-          <Link href="/">
-            <Button 
-              size="sm"
-            >
+          <Button asChild size="sm">
+            <Link href="/">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back
-            </Button>
-          </Link>
+            </Link>
+          </Button>
           <div className="flex items-center gap-2">
             <span className="font-semibold tracking-tight text-foreground">
               New Content Task
@@ -163,7 +161,7 @@ export default function CreatePage() {
                   className="data-[state=active]:bg-background data-[state=active]:shadow-sm  data-[state=active]:border data-[state=active]:border-white/10 rounded-lg py-2.5 transition-all"
                 >
                   <div className="flex items-center gap-2">
-                    <Lightbulb className="w-4 h-4" />
+                    <Lightbulb className="w-4 h-4" data-icon="inline-start" />
                     <span>Topic</span>
                   </div>
                 </TabsTrigger>
@@ -172,7 +170,7 @@ export default function CreatePage() {
                   className="data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-white/10 rounded-lg py-2.5"
                 >
                   <div className="flex items-center gap-2">
-                    <FileText className="w-4 h-4" />
+                    <FileText className="w-4 h-4" data-icon="inline-start" />
                     <span>Article</span>
                   </div>
                 </TabsTrigger>

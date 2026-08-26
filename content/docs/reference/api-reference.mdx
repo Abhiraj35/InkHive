@@ -1,0 +1,83 @@
+---
+title: API Reference
+description: HTTP endpoints and Convex functions.
+---
+
+# API Reference
+
+## HTTP endpoints
+
+### POST `/api/trigger-inngest`
+
+Triggers content generation or publishing via Inngest.
+
+**Request body**
+
+```json
+{
+  "projectId": "proj_abc123",
+  "inputType": "topic",
+  "inputContent": "How AI improves conversion"
+}
+```
+
+**Response**
+
+```json
+{
+  "success": true,
+  "projectId": "proj_abc123"
+}
+```
+
+**Error response**
+
+```json
+{
+  "error": "Failed to trigger content generation"
+}
+```
+
+### POST `/api/upload`
+
+Accepts a file upload and returns a URL.
+
+**Request**: `multipart/form-data` with a `file` field.
+
+**Response**
+
+```json
+{
+  "url": "https://example.com/file.png"
+}
+```
+
+> Currently returns a data URL placeholder. Replace with signed URL uploads (Vercel Blob, S3) for production.
+
+## Convex functions
+
+### Mutations
+
+| Function | Parameters | Description |
+| --- | --- | --- |
+| `createProject` | `{ inputType, inputContent }` | Create a new content project (auth required) |
+| `updateProjectStatus` | `{ projectId, status }` | Update project generation status |
+| `saveBlogPost` | `{ projectId, title, content, excerpt, readingTime }` | Store generated blog |
+| `saveSocialPosts` | `{ projectId, posts }` | Store all social platform posts |
+| `saveEmailNewsletter` | `{ projectId, subjectLines, html, plainText }` | Store email content |
+| `saveSeoMetadata` | `{ projectId, title, description, keywords, slug }` | Store SEO fields |
+| `recordError` | `{ projectId, step, error }` | Log a generation failure |
+| `updatePublishStatus` | `{ projectId, platform, status, error? }` | Update per-platform publish status |
+| `updateBlogPost` | `{ projectId, title, content }` | User edits to blog post |
+| `updateSocialPost` | `{ projectId, platform, text }` | User edits to a social post |
+| `updateEmailNewsletter` | `{ projectId, subjectLines, html, plainText }` | User edits to email |
+
+### Queries
+
+| Function | Parameters | Description |
+| --- | --- | --- |
+| `getUserProjects` | — | List all projects for the authenticated user |
+| `getProject` | `{ projectId }` | Get a single project by ID |
+| `getProjectById` | `{ projectId }` | Internal query used by Inngest functions |
+
+All mutations derive user identity server-side via `ctx.auth.getUserIdentity()` — never accept userId from the client.

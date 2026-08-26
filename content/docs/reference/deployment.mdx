@@ -1,0 +1,35 @@
+---
+title: Deployment
+description: Environment variables and deployment checklist.
+---
+
+# Deployment
+
+## Environment variables
+
+| Variable | Required | Description |
+| --- | --- | --- |
+| `NEXT_PUBLIC_CONVEX_URL` | Yes | Convex deployment URL |
+| `CLERK_JWT_ISSUER_DOMAIN` | Yes | Clerk OIDC issuer domain |
+| `GOOGLE_API_KEY` | Yes | Google Generative AI key |
+| `RESEND_API_KEY` | Yes | Resend email API key |
+| `INNGEST_API_KEY` | Yes | Inngest signing key |
+| `SOCIAL_TWITTER_TOKEN` | No | Twitter/X publishing token |
+| `SOCIAL_LINKEDIN_TOKEN` | No | LinkedIn publishing token |
+| `SOCIAL_FACEBOOK_TOKEN` | No | Facebook publishing token |
+
+## Deployment checklist
+
+1. **Convex** — Deploy schema and functions. Set `NEXT_PUBLIC_CONVEX_URL`.
+2. **Clerk** — Configure JWT issuer domain for Convex auth.
+3. **Inngest** — Point Inngest to your production URL (`https://yourapp.com/api/inngest`).
+4. **Google AI** — Add API key to deployment secrets.
+5. **Resend** — Add API key for email sending.
+6. **Social platforms** — Add publishing tokens for each platform you want to support.
+7. **Monitoring** — Set up alerting for Inngest failures and Convex function errors.
+
+## Production notes
+
+- Inngest retries are configured at the function level (default: 3 retries).
+- Publishing failures are per-platform — a failure on one platform does not block others.
+- All errors are logged to the `contentProjects.error` field for debugging.

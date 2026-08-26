@@ -1,0 +1,77 @@
+---
+title: Workflows
+description: Inngest orchestration for content generation and publishing.
+---
+
+# Workflows
+
+InkHive uses Inngest for durable, observable execution of multi-step AI tasks.
+
+## Content generation pipeline
+
+**Function**: `contentPipeline` (`inngest/functions/content-pipeline.ts`)
+**Trigger**: `content/generate` event
+**Config**: 3 retries, parallelism enabled
+
+### Steps
+
+1. Mark project status as `"generating"`.
+2. Generate blog post (must complete first — downstream steps depend on it).
+3. In parallel, generate:
+   - Social media posts (Twitter, LinkedIn, Facebook, Instagram, Medium)
+   - Email newsletter (subject lines, HTML, plain text)
+   - SEO metadata (slug, title, description, keywords)
+4. On success, set status to `"completed"`.
+5. On error, call `recordError` with the failing step and stack trace.
+
+### Inputs
+
+```ts
+{
+  projectId: string;
+  inputType: "topic" | "article";
+  inputContent: string;
+}
+```
+
+### Convex mutations called
+
+| Mutation | Purpose |
+| --- | ---|
+| `updateProjectStatus` | Set overall project status |
+| `saveBlogPost` | Store generated blog content |
+| `saveSocialPosts` | Store all platform-specific posts |
+| `saveEmailNewsletter` | Store email content and subject lines |
+| `saveSeoMetadata` | Store SEO fields |
+| `recordError` | Log failures with step context |
+
+### Failure handling
+
+- Each step is wrapped in `step.run` with automatic retries.
+- If blog generation fails, the pipeline stops — downstream steps cannot run without it.
+- If a parallel step (social, email, SEO) fails, other parallel steps continue. The failed step is recorded but does not block the rest.
+
+## Publishing pipeline
+
+**Function**: `publishContent` (`inngest/functions/publish-content.ts`)
+**Trigger**: `content/publish` event
+
+### Steps
+
+1. Fetch project snapshot from Convex.
+2. Run each platform publisher in parallel.
+3. Update per-platform publish status via `updatePublishStatus`.
+4. Return consolidated results.
+
+### Failure handling
+
+- Platform failures are independent — a Twitter failure does not block LinkedIn publishing.
+- Retries are configured at the function level.
+- Exhausted retries are logged for observability via `onFailure`.
+
+## Adding a new AI step
+
+1. Create `inngest/steps/ai-generation/<your-step>.ts` with the prompt and parsing logic.
+2. Wire it into `contentPipeline` or a new Inngest function.
+3. Add a Convex mutation to persist the output.
+4. Add tests and log token usage.

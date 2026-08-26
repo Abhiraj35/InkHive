@@ -1,0 +1,83 @@
+---
+title: Data Model
+description: Convex schema, indexes, and query patterns.
+---
+
+# Data Model
+
+InkHive stores all content in a single Convex table: `contentProjects`.
+
+## Schema
+
+```ts
+// convex/schema.ts
+contentProjects: defineTable({
+  userId: v.string(),
+  inputType: v.union(v.literal("topic"), v.literal("article")),
+  inputContent: v.string(),
+  status: v.union(
+    v.literal("pending"),
+    v.literal("generating"),
+    v.literal("completed"),
+    v.literal("failed")
+  ),
+  jobStatus: v.object({
+    blogPost: v.string(),
+    socialPosts: v.string(),
+    emailNewsletter: v.string(),
+    seoMetadata: v.string(),
+  }),
+  blogPost: v.optional(v.object({
+    title: v.string(),
+    content: v.string(),
+    excerpt: v.string(),
+    readingTime: v.number(),
+    isEdited: v.boolean(),
+  })),
+  socialPosts: v.optional(v.object({
+    twitter: v.optional(v.object({ text: v.string(), status: v.string() })),
+    linkedin: v.optional(v.object({ text: v.string(), status: v.string() })),
+    facebook: v.optional(v.object({ text: v.string(), status: v.string() })),
+    instagram: v.optional(v.object({ text: v.string(), status: v.string() })),
+    medium: v.optional(v.object({ text: v.string(), status: v.string() })),
+  })),
+  emailNewsletter: v.optional(v.object({
+    subjectLines: v.array(v.string()),
+    htmlContent: v.string(),
+    plainText: v.string(),
+    status: v.string(),
+  })),
+  seoMetadata: v.optional(v.object({
+    title: v.string(),
+    description: v.string(),
+    keywords: v.array(v.string()),
+    slug: v.string(),
+  })),
+  error: v.optional(v.string()),
+  createdAt: v.number(),
+  updatedAt: v.number(),
+})
+  .index("by_user", ["userId"])
+  .index("by_status", ["status"])
+  .index("by_created_at", ["createdAt"]);
+```
+
+## Indexes
+
+| Index | Fields | Use case |
+| --- | --- | --- |
+| `by_user` | `userId` | List all projects for the current user |
+| `by_status` | `status` | Filter projects by generation status |
+| `by_created_at` | `createdAt` | Sort by creation date |
+
+## Query patterns
+
+- **List user projects**: Use `by_user` index, sort by `createdAt` descending.
+- **Get single project**: Query by document ID — Convex handles this efficiently.
+- **Find failed jobs**: Use `by_status` index with `"failed"` filter.
+
+## Guidelines
+
+- Always use indexes for queries — avoid `filter()` on large collections.
+- Keep large content (blog HTML, email HTML) in the same document; Convex handles documents up to 1MB.
+- If content grows beyond single-document limits, split into separate tables with a foreign key reference.
